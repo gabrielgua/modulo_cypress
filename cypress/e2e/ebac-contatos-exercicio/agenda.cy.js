@@ -2,9 +2,9 @@
 
 describe('Testes para as funcionalidades do projeto ebac-agenda', () => {
 
-  const nome = 'Gabriel Guaitanele';
+  const nome = 'Novo Contato';
   const telefone = '10 912344321';
-  const email = 'gabriel.guaitanele@email.com';
+  const email = 'contato@email.com';
   
   function adicionarContato() {
     cy.get('input[type=text]').type(nome);
@@ -12,6 +12,7 @@ describe('Testes para as funcionalidades do projeto ebac-agenda', () => {
     cy.get('input[type=tel]').type(telefone);
   
     cy.get('.adicionar').click();
+    cy.wait(1000)
   }
 
   beforeEach(() => {
@@ -20,10 +21,47 @@ describe('Testes para as funcionalidades do projeto ebac-agenda', () => {
 
   it('Deve adicionar um novo contato', () => {
     adicionarContato();
+   
+    cy.get('.contato').last().should('contain.text', nome);
+    cy.get('.contato').last().should('contain.text', telefone);
+    cy.get('.contato').last().should('contain.text', email);
+  })
 
-    cy.get('.contato .sc-eDDNvR > :nth-child(1)').last().should('have.text', nome);
-    cy.get('.contato .sc-eDDNvR > :nth-child(2)').last().should('have.text', telefone);
-    cy.get('.contato .sc-eDDNvR > :nth-child(3)').last().should('have.text', email);
+  it('Deve popular o formulário quando o botão de editar for clicado', () => {
+    adicionarContato();
+
+    cy.get('.edit').last().click();
+
+    cy.get('input[type=text]').should('have.value', nome);
+    cy.get('input[type=email]').should('have.value', email);
+    cy.get('input[type=tel]').should('have.value', telefone);
+    
+  })
+
+  it('Deve mostrar os botões de salvar e cancelar a edição', () => {
+    cy.get('.edit').last().click();
+
+    cy.get('.alterar').should('exist');
+    cy.get('.cancelar').should('exist');
+  })
+
+  it('Deve editar um contato', () => {
+    adicionarContato();
+
+    cy.get('.edit').last().click();
+
+    cy.get('input[type=text]').clear().type('Contato editado');
+    cy.get('input[type=email]').clear().type('editado@email.com');
+    cy.get('input[type=tel]').clear().type('9999999999');
+
+    cy.get('.alterar').click();
+    cy.wait(1500)
+    
+
+    cy.get('.contato').last().should('contain.text', 'Contato editado');
+    cy.get('.contato').last().should('contain.text', 'editado@email.com');
+    cy.get('.contato').last().should('contain.text', '9999999999');
+    
   })
 })
 
