@@ -21,7 +21,8 @@ describe('Testes para as funcionalidades do projeto ebac-agenda', () => {
 
   it('Deve adicionar um novo contato', () => {
     adicionarContato();
-   
+
+    
     cy.get('.contato').last().should('contain.text', nome);
     cy.get('.contato').last().should('contain.text', telefone);
     cy.get('.contato').last().should('contain.text', email);
@@ -39,6 +40,8 @@ describe('Testes para as funcionalidades do projeto ebac-agenda', () => {
   })
 
   it('Deve mostrar os botões de salvar e cancelar a edição', () => {
+    adicionarContato();
+
     cy.get('.edit').last().click();
 
     cy.get('.alterar').should('exist');
@@ -61,7 +64,16 @@ describe('Testes para as funcionalidades do projeto ebac-agenda', () => {
     cy.get('.contato').last().should('contain.text', 'Contato editado');
     cy.get('.contato').last().should('contain.text', 'editado@email.com');
     cy.get('.contato').last().should('contain.text', '9999999999');
-    
+  })
+
+  it('Deve remover um contato', () => {
+    adicionarContato();
+
+    cy.get('.delete').last().click();
+
+    cy.get('.contato').last().should('not.contain.text', nome);
+    cy.get('.contato').last().should('not.contain.text', email);
+    cy.get('.contato').last().should('not.contain.text', telefone);
   })
 })
 
